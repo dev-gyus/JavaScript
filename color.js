@@ -22,20 +22,46 @@ var Links ={
   }
 }
 
+var COLOR_MODE_KEY = 'colorMode';
+
+function setColorMode(mode, button){
+  if(mode == 'dark'){
+    Body.setBackgroundColor('black');
+    Body.setColor('white');
+    Links.setColor('powderblue');
+    if(button){ button.value = 'Bright Mode'; }
+  }
+  else{
+    Body.setBackgroundColor('white');
+    Body.setColor('black');
+    Links.setColor('blue');
+    if(button){ button.value = 'Dark Mode'; }
+  }
+}
+
+function saveColorMode(mode){
+  try{
+    localStorage.setItem(COLOR_MODE_KEY, mode);
+  }catch(e){}
+}
+
+function loadColorMode(){
+  try{
+    return localStorage.getItem(COLOR_MODE_KEY);
+  }catch(e){
+    return null;
+  }
+}
+
 function nightDayHandler(self){
-var target = document.querySelector('body');
-if(self.value == 'Dark Mode'){
-Body.setBackgroundColor('black');
-Body.setColor('white')
-self.value = 'Bright Mode';
+  var mode = self.value == 'Dark Mode' ? 'dark' : 'bright';
+  setColorMode(mode, self);
+  saveColorMode(mode);
+}
 
-Links.setColor('powderblue');
-}
-else{
-  Body.setBackgroundColor('white');
-  Body.setColor('black');
-  self.value = 'Dark Mode';
-
-  Links.setColor('blue');
-}
-}
+document.addEventListener('DOMContentLoaded', function(){
+  if(loadColorMode() == 'dark'){
+    var button = document.querySelector('input[type="button"][onclick*="nightDayHandler"]');
+    setColorMode('dark', button);
+  }
+});
